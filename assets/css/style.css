@@ -218,21 +218,14 @@ a:hover { color: var(--gold-ink); }
   width: 100%; max-width: 1320px; margin: 0 auto; padding: 130px 28px 110px;
   display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 56px; align-items: center;
 }
-.hero__name { margin: 4px 0 26px; font-weight: 400; }
+.hero__name { margin: 6px 0 22px; font-weight: 400; }
 .hero__en {
   display: block;
-  font: 380 clamp(54px, 8.4vw, 116px)/.95 var(--serif);
-  letter-spacing: -.035em;
-  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font: 450 clamp(38px, 5vw, 64px)/1.08 var(--serif);
+  letter-spacing: -.02em;
+  font-variation-settings: "opsz" 60;
+  color: var(--white);
 }
-.hero__en em {
-  font-style: italic; font-weight: 340;
-  background: linear-gradient(100deg, var(--gold-300), var(--gold-500) 45%, #F3E2A9 70%, var(--gold-500));
-  background-size: 200% 100%;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: sheen 9s ease-in-out infinite;
-}
-@keyframes sheen { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 .hero__lede { max-width: 640px; font-size: clamp(17px, 1.45vw, 20px); line-height: 1.6; color: rgba(255, 255, 255, .84); margin: 0 0 30px; }
 .hero__lede strong { color: var(--white); font-weight: 600; }
 .hero__badges { list-style: none; padding: 0; margin: 0 0 36px; display: grid; grid-template-columns: repeat(2, max-content); justify-items: start; gap: 10px; }
