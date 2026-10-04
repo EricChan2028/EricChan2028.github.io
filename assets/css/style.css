@@ -235,9 +235,9 @@ a:hover { color: var(--gold-ink); }
 @keyframes sheen { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 .hero__lede { max-width: 640px; font-size: clamp(17px, 1.45vw, 20px); line-height: 1.6; color: rgba(255, 255, 255, .84); margin: 0 0 30px; }
 .hero__lede strong { color: var(--white); font-weight: 600; }
-.hero__badges { list-style: none; padding: 0; margin: 0 0 36px; display: flex; flex-wrap: wrap; gap: 10px; }
+.hero__badges { list-style: none; padding: 0; margin: 0 0 36px; display: grid; grid-template-columns: repeat(2, max-content); justify-items: start; gap: 10px; }
 .hero__badges li {
-  display: inline-flex; align-items: center; gap: 9px;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
   padding: 9px 15px; border-radius: 999px;
   font: 500 13.5px/1 var(--sans); color: rgba(255, 255, 255, .86);
   background: rgba(255, 255, 255, .05);
@@ -598,6 +598,7 @@ html.is-locked { overflow: hidden; }
   .filters { justify-content: flex-start; }
 }
 @media (max-width: 560px) {
+  .hero__badges { grid-template-columns: 1fr; }
   body { font-size: 16px; }
   .wrap { padding: 0 16px; }
   .nav__inner { padding: 12px 16px; gap: 12px; }
