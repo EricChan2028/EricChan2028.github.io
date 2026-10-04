@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changyuan Chen</title>
+<meta name="description" content="Changyuan Chen — undergraduate researcher at Eastern Michigan University working on reinforcement learning for language-model agents: off-policy correction, credit assignment in self-improving multi-agent teams, and the failure modes of self-generated curricula. First author, NeurIPS 2026.">
+<meta name="author" content="Changyuan Chen">
+<meta name="theme-color" content="#22103A">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Changyuan Chen">
+<meta property="og:description" content="Reinforcement learning for language-model agents. First author, NeurIPS 2026. ICPC Silver Medalist.">
+<meta property="og:image" content="https://ericchan2028.github.io/assets/img/og.png">
+<meta property="og:url" content="https://ericchan2028.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Changyuan Chen",
+ "url":"https://ericchan2028.github.io/","email":"mailto:cchen22@emich.edu",
+ "affiliation":{"@type":"CollegeOrUniversity","name":"Eastern Michigan University"},
+ "sameAs":["https://github.com/EricChan2028"],
+ "knowsAbout":["Reinforcement learning","Large language model agents","Multi-agent systems"]}
+</script>
+<script>
+  document.documentElement.classList.add("js");
+  try { var t = localStorage.getItem("cc-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="#top" aria-label="Back to top">
+      <span class="mono-mark" aria-hidden="true">CC</span>
+      <span class="nav__name">Changyuan Chen</span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#news">News</a>
+      <a href="#publications">Publications</a>
+      <a href="#experience">Experience</a>
+      <a href="#honors">Honors</a>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="assets/cv/Changyuan_Chen_CV.pdf" target="_blank" rel="noopener">CV</a>
+      <button class="icon-btn nav__menu" id="menuToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="m1" d="M4.5 7.5h15"/><path class="m2" d="M4.5 12h15"/><path class="m3" d="M4.5 16.5h15"/></svg>
+      </button>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 14.6A8.4 8.4 0 0 1 9.4 3.8a8.4 8.4 0 1 0 10.8 10.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="hero" id="top" aria-label="Introduction">
+  <canvas class="hero__canvas" id="lattice" aria-hidden="true"></canvas>
+  <div class="hero__veil" aria-hidden="true"></div>
+  <div class="hero__inner">
+    <div class="hero__text">
+      <p class="eyebrow eyebrow--light">Undergraduate Researcher · Eastern Michigan University</p>
+      <h1 class="hero__name">
+        <span class="hero__en">Changyuan <em>Chen</em></span>
+      </h1>
+      <p class="hero__lede">
+        I work on <strong>reinforcement learning for language-model agents</strong> — keeping off-policy training unbiased,
+        crediting the agent that actually taught a self-improving team, and catching the quiet ways self-generated
+        curricula go wrong.
+      </p>
+      <ul class="hero__badges" aria-label="Highlights">
+        <li><span class="badge-dot"></span>First author · <b>NeurIPS 2026</b></li>
+        <li><span class="badge-dot"></span><b>ICPC</b> Silver Medal</li>
+        <li><span class="badge-dot"></span>GPA 3.93 · <b>Rank 1 / 213</b></li>
+      </ul>
+      <div class="hero__cta">
+        <a class="btn btn--gold" href="#publications">Read the papers</a>
+        <a class="btn btn--line" href="assets/cv/Changyuan_Chen_CV.pdf" target="_blank" rel="noopener">Download CV</a>
+        <div class="hero__social">
+          <a class="icon-btn icon-btn--light" href="https://github.com/EricChan2028" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-3.1 19.1c.5.1.7-.2.7-.5v-1.8c-2.7.6-3.3-1.2-3.3-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.5-1.1-4.5-4.9 0-1.1.4-2 1-2.7-.1-.2-.4-1.2.1-2.6 0 0 .8-.3 2.7 1a9.2 9.2 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.6.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.5 4.9.4.3.7.9.7 1.8v2.7c0 .3.2.6.7.5A9.8 9.8 0 0 0 12 2.2z"/></svg>
+          </a>
+          <a class="icon-btn icon-btn--light" href="mailto:cchen22@emich.edu" aria-label="Email">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.2"/><path d="m3.8 7 8.2 6.2L20.2 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <figure class="hero__portrait">
+      <div class="orbit" aria-hidden="true"><span></span><span></span></div>
+      <img src="assets/img/portrait.jpg" width="720" height="720" alt="Portrait of Changyuan Chen" fetchpriority="high">
+      <figcaption>Michigan, USA</figcaption>
+    </figure>
+  </div>
+  <a class="hero__scroll" href="#research" aria-label="Scroll to research"><span></span></a>
+</section>
+
+<main id="main">
+
+  <section class="section" id="research">
+    <div class="wrap">
+      <p class="eyebrow">Research</p>
+      <h2 class="statement reveal">How can a language model improve from its own experience <em>without fooling itself?</em></h2>
+      <p class="section__intro reveal">
+        Agents increasingly train on data they generate, judge and replay themselves. Each of those loops has a place where the
+        training signal can drift away from what we actually want. My work finds those places, measures them, and fixes them
+        with methods that come with guarantees and honest negative results.
+      </p>
+      <div class="pillars">
+        <article class="pillar reveal" data-filter="Agentic RL">
+          <div class="pillar__num">01</div>
+          <h3>Stable off-policy agentic RL</h3>
+          <p>Reused KV caches make the sampler a hidden mix of old and new weights. I bound that bias and recompute only where the bound fails.</p>
+          <a class="pillar__link" href="#paper=gcd">GCD · NeurIPS 2026 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="pillar reveal" data-filter="Multi-agent">
+          <div class="pillar__num">02</div>
+          <h3>Diversity &amp; constraints</h3>
+          <p>Search archives of multi-agent designs instead of one winner, and optimize what survives deployment constraints rather than raw reward.</p>
+          <a class="pillar__link" href="#paper=qd-mas">QD for multi-agent structures · under review <span aria-hidden="true">→</span></a>
+          <a class="pillar__link" href="#paper=deltaadmet">DeltaADMET-R1 · ICLR 2027 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="pillar reveal" data-filter="Self-improvement">
+          <div class="pillar__num">03</div>
+          <h3>Self-improvement that stays honest</h3>
+          <p>Measure how self-play curricula drift toward ill-posed problems, and credit each agent by the progress it causes, not the outcomes it can game.</p>
+          <a class="pillar__link" href="#paper=selfplay">Uncertainty ≠ QC · ACL 2027 <span aria-hidden="true">→</span></a>
+          <a class="pillar__link" href="#paper=prosper">ProSPER · AAMAS 2027 <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ivory" id="news">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">News</p>
+      <h2 class="h2 reveal">Recent</h2>
+      <ol class="timeline">
+        <li class="reveal"><time>Fall 2026</time><p>Two new first-author papers under review: <a href="#paper=selfplay">label-free self-play drift</a> (ACL 2027) and <a href="#paper=prosper">ProSPER</a> (AAMAS 2027).</p></li>
+        <li class="reveal"><time>Sep 2026</time><p><a href="#paper=gcd"><b>GCD</b></a> accepted to the <b>NeurIPS 2026</b> main track — first author.</p></li>
+        <li class="reveal"><time>Sep 2026</time><p>Finished my research internship at <b>Tsinghua University</b> with Prof. Yanyan Lan; <a href="#paper=deltaadmet">DeltaADMET-R1</a> submitted to ICLR 2027.</p></li>
+        <li class="reveal"><time>Sep 2026</time><p>Bronze medal (391 / 6,807) in the Kaggle Pokémon TCG AI Battle Challenge (Featured).</p></li>
+        <li class="reveal"><time>Jul 2026</time><p>Completed the <b>Tencent Rhino-Bird Elite Program</b> with 10 pull requests to Tencent's open-source agent frameworks.</p></li>
+        <li class="reveal"><time>Apr 2026</time><p><b>ICPC Silver Medal</b> as team leader.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="publications">
+    <div class="wrap">
+      <div class="pubs__head">
+        <div>
+          <p class="eyebrow">Publications</p>
+          <h2 class="h2 reveal">Papers <small id="pubCount"></small></h2>
+          <p class="pubs__legend">Click a paper for the summary, key results, citation and PDF. <span class="me-key">Changyuan Chen</span> · * equal contribution · † corresponding author</p>
+        </div>
+        <div class="filters" role="group" aria-label="Filter papers">
+          <button class="chip is-on" data-f="all" type="button">All</button>
+          <button class="chip" data-f="accepted" type="button">Accepted</button>
+          <button class="chip" data-f="review" type="button">Under review</button>
+          <span class="filters__sep" aria-hidden="true"></span>
+          <button class="chip" data-f="Agentic RL" type="button">Agentic RL</button>
+          <button class="chip" data-f="Self-improvement" type="button">Self-improvement</button>
+          <button class="chip" data-f="Multi-agent" type="button">Multi-agent</button>
+          <button class="chip" data-f="AI for Science" type="button">AI for Science</button>
+          <button class="chip" data-f="ML systems" type="button">Systems</button>
+        </div>
+      </div>
+      <div class="pubs" id="pubList" aria-live="polite"></div>
+      <noscript><p>Enable JavaScript to see the interactive publication list. Papers: GCD (NeurIPS 2026); Diversity over Convergence (under review); DeltaADMET-R1 (ICLR 2027, under review); ClipStore (ICLR 2027, under review); Uncertainty Is Not Quality Control (ACL 2027, under review); ProSPER (AAMAS 2027, under review).</p></noscript>
+    </div>
+  </section>
+
+  <section class="section section--deep" id="experience">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--light">Experience</p>
+      <h2 class="h2 h2--light reveal">Where I have worked</h2>
+      <div class="xp">
+        <article class="xp__card reveal">
+          <div class="xp__meta"><span class="xp__mark">THU</span><span class="xp__date">Jun – Sep 2026</span></div>
+          <h3>Tsinghua University</h3>
+          <p class="xp__role">Research Intern · reinforcement learning · Prof. Yanyan Lan</p>
+          <p>Constrained post-training of LLM policies on measured ADMET panels (first-author ICLR 2027 submission), and the NeurIPS 2026 GCD rebuttal.</p>
+        </article>
+        <article class="xp__card reveal">
+          <div class="xp__meta"><span class="xp__mark">TX</span><span class="xp__date">Feb – Jul 2026</span></div>
+          <h3>Tencent Rhino-Bird Elite Program</h3>
+          <p class="xp__role">Open-source agent engineering · 10 pull requests</p>
+          <ul>
+            <li><b>trpc-agent-python</b> — a Skills + sandbox + database code-review agent and an evaluation–optimization loop with automatic regression tests.</li>
+            <li><b>TencentDB-Agent-Memory</b> — Claude Code / Dify adapters, a unified adapter SDK and a prompt-cache prefix stability fix.</li>
+            <li><b>Hunyuan Hy3</b> — a plug-and-play MCP server (hy3-mcp) and a terminal CLI agent.</li>
+          </ul>
+          <p class="xp__note">PRs are public and under review; not yet merged.</p>
+        </article>
+        <article class="xp__card reveal">
+          <div class="xp__meta"><span class="xp__mark">EMU</span><span class="xp__date">Sep 2024 – Jun 2028</span></div>
+          <h3>Eastern Michigan University</h3>
+          <p class="xp__role">B.S. Computer Science · GPA 3.93 · Rank 1 / 213 (top 0.4%)</p>
+          <p>Coursework includes Artificial Intelligence &amp; Computer Vision, Data Structures, Operating Systems and Object-Oriented Programming. GCD was completed by all authors at EMU.</p>
+        </article>
+        <article class="xp__card reveal">
+          <div class="xp__meta"><span class="xp__mark xp__mark--code" aria-hidden="true">&lt;/&gt;</span><span class="xp__date">Jan 2025 – Jun 2026</span></div>
+          <h3>Multi-agent attribution for code agents</h3>
+          <p class="xp__role">Research project · mentored by Yiren Song (NUS)</p>
+          <p>Modeled an intent → decomposition → code-generation → terminal-verification pipeline as a differentiable system and read each node's contribution from first- and second-order gradients, routing strong LLMs only to high-contribution nodes.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="honors">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Honors</p>
+      <h2 class="h2 reveal">Awards &amp; competitions</h2>
+      <ul class="honors">
+        <li class="reveal honors__top"><span class="honors__medal honors__medal--silver" aria-hidden="true"></span><div><b>ICPC International Collegiate Programming Contest</b><span>Silver Medal · Team Leader</span></div><time>2026</time></li>
+        <li class="reveal"><span class="honors__medal honors__medal--bronze" aria-hidden="true"></span><div><b>Kaggle Pokémon TCG AI Battle Challenge (Featured)</b><span>Bronze · 391 / 6,807 (top 6%)</span></div><time>2026</time></li>
+        <li class="reveal"><span class="honors__medal" aria-hidden="true"></span><div><b>27th National Robot &amp; AI Competition</b><span>National First Prize ×2 · Leader</span></div><time>2025</time></li>
+        <li class="reveal"><span class="honors__medal" aria-hidden="true"></span><div><b>14th National Ocean Vehicle Design &amp; Making Competition</b><span>National First Prize · Leader</span></div><time>2025</time></li>
+        <li class="reveal"><span class="honors__medal honors__medal--silver" aria-hidden="true"></span><div><b>7th Global Campus AI Algorithm Elite League (2 tracks)</b><span>National Second Prize ×2 · Leader</span></div><time>2025</time></li>
+        <li class="reveal"><span class="honors__medal honors__medal--bronze" aria-hidden="true"></span><div><b>China International College Students Innovation Competition</b><span>National Third Prize · Leader</span></div><time>2025</time></li>
+        <li class="reveal"><span class="honors__medal honors__medal--plain" aria-hidden="true"></span><div><b>Invention patent · utility model · software copyright</b><span>Authorized</span></div><time>2025–26</time></li>
+      </ul>
+      <p class="honors__total reveal">In total: 10 national-level and 50 provincial-level awards, team leader in most.</p>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap contact__inner">
+      <div>
+        <p class="eyebrow eyebrow--light">Contact</p>
+        <h2 class="contact__title">Let's work on agents that learn honestly.</h2>
+        <p class="contact__text">I'm open to research collaborations and internships in RL for LLM agents, self-improving systems and efficient training. I'm based in Michigan (US Eastern Time).</p>
+      </div>
+      <div class="contact__links">
+        <a class="btn btn--gold" href="mailto:cchen22@emich.edu">cchen22@emich.edu</a>
+        <a class="btn btn--line" href="https://github.com/EricChan2028" target="_blank" rel="noopener">github.com/EricChan2028</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© 2026 Changyuan Chen</span>
+    <span>Last updated October 2026 · Hand-built in purple, gold &amp; white</span>
+  </div>
+</footer>
+
+<dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
+  <div class="sheet__panel">
+    <button class="sheet__close" type="button" data-close aria-label="Close">×</button>
+    <div class="sheet__body" id="sheetBody"></div>
+  </div>
+</dialog>
+
+<script src="assets/js/papers.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
