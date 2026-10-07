@@ -12,6 +12,8 @@ Personal academic homepage of **Changyuan Chen** (Eastern Michigan University), 
 | `assets/css/style.css` | Styles. The colours are CSS variables at the top of the file. |
 | `assets/cv/Changyuan_Chen_CV.pdf` | The CV linked from the header and the hero. |
 | `assets/papers/` | Public PDFs and posters. |
+| `assets/papers/figs/` | Figures shown in the paper detail sheets (WebP, about 1,800 px wide). |
+| `assets/fonts/` | Self-hosted Fraunces, Inter and JetBrains Mono (SIL OFL 1.1, licences included), so the site makes no third-party requests and loads in mainland China. |
 | `404.html` | The "page not found" page. |
 
 ## Common edits
@@ -23,6 +25,13 @@ Personal academic homepage of **Changyuan Chen** (Eastern Michigan University), 
 3. When the review ends, replace the single-author list with the full author list (`authors: [...]`) and add a `bibtex` entry.
 
 Each paper card then shows a **PDF** button. The detail sheet embeds the PDF in its **PDF** tab.
+
+**Edit a paper card:** each entry in `papers.js` has
+
+- `question` and `approach`: the two-line summary on the card;
+- `bars`: the small result chart on the card (bars start at 0 and are drawn to scale against `max`);
+- `stats`: two `[number, label]` pairs shown under the summary;
+- `figures`: figures for the detail sheet, each with `tab: "overview"` or `"results"`, its pixel size, alt text and caption. Clicking a figure enlarges it.
 
 **Add a news item:** add an `<li>` to the `#news` list in `index.html`.
 
@@ -39,4 +48,4 @@ Paper ids: `gcd`, `prosper`, `selfplay`, `qd-mas`, `deltaadmet`, `clipstore`.
 
 ## Local preview
 
-Open `index.html` directly in a browser. Alternatively, run `python -m http.server` in this folder and visit http://localhost:8000.
+Run `python -m http.server` in this folder and visit http://localhost:8000. (Opening `index.html` directly from disk also works, but browsers block local font files there, so the text falls back to system fonts.)
