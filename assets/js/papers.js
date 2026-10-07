@@ -8,7 +8,9 @@
    question / approach:  the two-line summary shown on the card; stats: two [number, label] pairs under it.
    bars:     the card's result chart { title, max, lower, items: [{ label, value, text, hi, ours, soft, warn }], note }.
              Bars start at 0 and are drawn to scale against `max`; `hi` draws a range (value..hi).
-   figures:  figures for the detail sheet { src, w, h, tab: "overview" | "results", narrow, alt, caption }. */
+   figures:  figures for the detail sheet { src, w, h, tab: "overview" | "results", narrow, alt, caption };
+             a figure's id is its file name without extension (e.g. "gcd-math").
+   story:    the Results tab's storyline { lead, steps: [{ title, text, fig }] }; `fig` places that figure in the step. */
 window.PAPERS = [
   {
     id: "gcd",
@@ -64,22 +66,35 @@ window.PAPERS = [
       ["Llama-3.1-8B (rebuttal)", "stable at staleness 512, where M2PO diverges in 3/3 seeds"],
       ["Where the bias lives (camera-ready)", "detector fires on 7.9% of agent-reasoning tokens vs 0.6% of tool output and 0.3% of system prompt; full-attention layers are 25% of layers but carry 72–77% of the bias"]
     ],
+    story: {
+      lead: "One thread runs through the results: stale KV caches make off-policy RL fast but silently biased, and GCD removes the bias without giving back the speed. Each step tests one link in that chain.",
+      steps: [
+        { title: "Training stays stable as the cache goes stale", fig: "gcd-math",
+          text: "Off-policy methods degrade as rollouts reuse older caches. At staleness 512, M2PO falls to 48.1% on MATH-500 and five of the six other off-policy baselines diverge, while M2PO + GCD holds 67.1%. GCD on its own, without M2PO's trust region, still keeps 58.7%." },
+        { title: "The gain carries over to agents and grows with staleness", fig: "gcd-tau",
+          text: "On τ-bench retail, the benefit of GCD widens as the cache ages: +2.1 pass⁴ at staleness 128, +5.7 at 256 (44.1 vs 38.4, p < 0.001) and +18.9 at 512, where M2PO drops to 19.6." },
+        { title: "It keeps most of the speed of reuse", fig: "gcd-throughput",
+          text: "Full recomputation removes the bias but is slow; naive reuse is fast but biased, and stable only at a smaller batch. GCD recomputes only the flagged positions: 1,666 tokens/s per GPU, 1.38× full recomputation and 1.15× naive reuse, with about a tenth of naive reuse's bias. The extra compute is about 1.9% of a full recompute." },
+        { title: "And the gain really comes from correcting the bias", fig: "gcd-weights",
+          text: "Is GCD only damping variance? Against ground-truth weights from full recomputation, the corrected weight is closer on 68% / 74% of tokens at staleness 256 / 512, versus 58% / 61% for a damping control matched in mean, and its average error is 46% / 56% lower than naive reuse. The result also transfers: Llama-3.1-8B stays stable at staleness 512, where M2PO diverges in all three seeds." }
+      ]
+    },
     figures: [
       { src: "assets/papers/figs/gcd-bias.webp", w: 1700, h: 1109, tab: "overview",
         alt: "Line chart on a log scale: the measured KV-drift bias and the GCD bound both rise with staleness from 1 to 512.",
         caption: "The problem, measured. Median and 95th-percentile KV-drift bias |b_t| grow with staleness, and the GCD bound (Theorem 5) stays close to the measured median (median / bound 0.64 → 0.76). Qwen3.5-9B, 1,000 held-out τ-bench retail prompts; data from Table 1, redrawn for the NeurIPS poster." },
       { src: "assets/papers/figs/gcd-math.webp", w: 1743, h: 1109, tab: "results",
         alt: "Line chart of MATH-500 accuracy against staleness: M2PO + GCD stays near 70% while M2PO drops to 48.1% at staleness 512.",
-        caption: "MATH-500 accuracy vs staleness (Qwen3.5-9B, five seeds; Table 2). M2PO + GCD degrades gracefully; M2PO falls to 48.1% at staleness 512, and five of the six other off-policy baselines have diverged (×) by then." },
+        caption: "MATH-500 accuracy vs staleness, Qwen3.5-9B, five seeds (paper Table 2); × marks divergence." },
       { src: "assets/papers/figs/gcd-tau.webp", w: 1743, h: 1129, tab: "results",
         alt: "Line chart of τ-bench retail pass⁴ against staleness, with the gap between M2PO + GCD and M2PO growing to +18.9 at staleness 512.",
-        caption: "τ-bench retail pass⁴ vs staleness (three seeds; Table 3). The gain from GCD grows with staleness: +5.7 at 256 (44.1 vs 38.4, p < 0.001) and +18.9 at 512." },
+        caption: "τ-bench retail pass⁴ vs staleness, three seeds (paper Table 3); brackets mark the gain from GCD." },
       { src: "assets/papers/figs/gcd-throughput.webp", w: 1573, h: 728, tab: "results",
         alt: "Bar chart of rollout throughput: GCD 1,666, naive KV reuse 1,453 and full recompute 1,204 tokens per second per GPU.",
-        caption: "Rollout throughput on Qwen3.5-9B (4×H100, staleness 512; Table 8). GCD is 1.38× faster than full recomputation and 1.15× faster than naive KV reuse, which needs a smaller stable batch and carries about 10× the bias." },
+        caption: "Rollout throughput on Qwen3.5-9B, 4×H100, staleness 512 (paper Table 8)." },
       { src: "assets/papers/figs/gcd-weights.webp", w: 1629, h: 843, tab: "results",
         alt: "Bar chart of the error of each importance weight against the full-recompute weight at staleness 256 and 512; the GCD weights have the smallest error.",
-        caption: "Is it really bias correction? Error of each importance weight against the full-recompute weight (rebuttal). The GCD weight is 46% / 56% closer than naive reuse at staleness 256 / 512, well ahead of a matched global-damping control; GCD-S is a signed-calibration variant from the rebuttal." }
+        caption: "Error of each importance weight against the full-recompute weight w^F, at staleness 256 and 512 (rebuttal); lower is better. GCD-S is a signed-calibration variant from the rebuttal." }
     ],
     setup: "GRPO on 4×H100 (FP8, FSDP-2, verl + vLLM); Qwen3.5 2B/4B/9B and Llama-3.1-8B.",
     bibtex: "@inproceedings{chen2026gcd,\n  title     = {{GCD}: Correcting Hidden-State Bias in Off-Policy Agentic {RL}},\n  author    = {Chen, Changyuan and Xiang, Jianyu and Luo, Jiasheng and Wang, Ziye and Gunasekaran, Nallappan},\n  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},\n  year      = {2026}\n}",
@@ -134,6 +149,17 @@ window.PAPERS = [
       ["When it breaks", "in a 7× larger space the algorithms separate (p_Holm = 0.042)"],
       ["Design rules", "LLM-as-judge aggregation (lift 1.67 / 3.07) transfers across tasks; best team size and topology are task-dependent"]
     ],
+    story: {
+      lead: "Should a multi-agent system converge on one best design? The results answer in three steps, and the most important one is a careful null result.",
+      steps: [
+        { title: "Archives map the design space far better",
+          text: "Quality-diversity archives reach up to 10× the QD-Score of handcrafted designs (p_Holm = 0.0006) and cover 0.78–0.84 of the structure map, against 0.12 for six handcrafted designs." },
+        { title: "But the choice of QD algorithm barely matters",
+          text: "In the standard space, the QD algorithms are statistically indistinguishable (all p_Holm ≥ 0.08 over ten seeds): a powered null. Saturation, the noise floor and 13.2× per-design evaluation-cost heterogeneity explain why." },
+        { title: "When the choice starts to matter, and what transfers",
+          text: "In a 7× larger space the algorithms do separate (p_Holm = 0.042). Across tasks, LLM-as-judge aggregation transfers (lift 1.67 / 3.07), while the best team size and topology are task-dependent." }
+      ]
+    },
     figures: [],
     figureNote: "Figures from this paper will be added after the double-blind review period.",
     setup: "Qwen2.5-7B-Instruct; competition MATH and GSM8K; ten seeds.",
@@ -186,16 +212,27 @@ window.PAPERS = [
       ["Boundary, reported", "on Qwen3-4B and Mistral-7B, higher raw reward did not become a controlled advantage"],
       ["Where improvement is lost", "a global target sacrifices 3.14–44.99% of contexts; identity-aligned averaging lifts certified gain by ≈ 30%"]
     ],
+    story: {
+      lead: "The results ask one question at three levels: once regression on every endpoint is controlled, how much of a policy's improvement survives, and what decides it?",
+      steps: [
+        { title: "Under control, the objective decides what survives", fig: "admet-control",
+          text: "At the same total-variation budget, the policy trained on the controlled objective (CPDPO-R) retains about 20% more test gain than matched scalar projection on Qwen3-8B (0.440 vs 0.367 ×10⁻³; five seeds, paired 95% interval excludes 0). The edge holds under post hoc 95% source-conformal calibration, which covers 193 of 197 test sources." },
+        { title: "Raw reward is not deployable gain", fig: "admet-scale",
+          text: "Scale changes the picture. At 4B, CPDPO-R earns a much higher raw gain than scalar projection (19.1 vs 13.9 ×10⁻³) yet retains no more after control (0.431 vs 0.435); the retained advantage appears only at 8B. We report this boundary: on Qwen3-4B and Mistral-7B, higher raw reward did not become a controlled advantage." },
+        { title: "Where improvement is lost, and how to keep it",
+          text: "A single global target sacrifices 3.14–44.99% of the contexts that a contextwise target protects, and identity-aligned permutation averaging raises the certified gain by about 30%." }
+      ]
+    },
     figures: [
       { src: "assets/papers/figs/admet-overview.webp", w: 1800, h: 828, tab: "overview",
         alt: "Diagram: historical assay outcomes train the CPDPO-R objective; at deployment an action-first LLM ranks a molecular panel and a TV controller mixes its policy toward a frozen anchor.",
         caption: "Figure 1. DeltaADMET-R1 separates historical feedback from deployment inputs. CPDPO-R differentiates the expected utility of the TV-controlled policy; target CE instead fits an exact measured update. Both routes use a frozen anchor, and current-panel assay outcomes are never available at deployment." },
       { src: "assets/papers/figs/admet-control.webp", w: 1800, h: 695, tab: "results",
         alt: "Interval plot: CPDPO-R retains more test gain than scalar projection under deterministic, 95% conformal and 90% conformal control.",
-        caption: "Figure 2. The training objective matters after control: Qwen3-8B test gain under deterministic and source-conformal control (left) and paired CPDPO-R − scalar differences with 95% intervals (right). The conformal points are post hoc analyses of the same policies. Units: 10⁻³ normalized utility." },
+        caption: "Figure 2. Qwen3-8B test gain under deterministic and source-conformal control (left) and paired CPDPO-R − scalar differences with 95% intervals (right). Units: 10⁻³ normalized utility." },
       { src: "assets/papers/figs/admet-scale.webp", w: 1800, h: 704, tab: "results",
         alt: "Bar charts of raw and retained gain at 4B and 8B, and interval plot of 8B paired effects.",
-        caption: "Figure 3. Model scale changes the controlled comparison. At 4B, a higher raw gain does not become a retained advantage (0.431 vs 0.435); at 8B, CPDPO-R retains 0.440 vs 0.367 under the same budget (ε = .005). Right: five-seed 8B paired effects with 95% intervals." }
+        caption: "Figure 3. Raw and retained gains at 4B and 8B under the same budget (ε = .005), and five-seed 8B paired effects with 95% intervals." }
     ],
     setup: "Trained on scaffold-disjoint Biogen panels; TDC and OpenADMET used only for external evaluation.",
     bibtex: null,
@@ -249,16 +286,27 @@ window.PAPERS = [
       ["Storage", "21.9% fewer retained bytes than the fixed-cut baseline"],
       ["Honest scope", "end-to-end 50-step text-to-video gain is only 1.006×; decoder continuation resumes bitwise, 1.19–2.85× faster than re-decoding"]
     ],
+    story: {
+      lead: "The contract is exactness: every reused feature must reproduce independent encoding bit for bit. The results show what that contract costs (very little) and where its gains stop.",
+      steps: [
+        { title: "Exact, and faster than both fixed cuts", fig: "clip-construction",
+          text: "On the reference plan of sixteen 129-frame latents, ClipStore finishes construction in 28.5 s, against 71.6 s for independent encoding (2.51× faster) and 31.6 s / 34.1 s for the two fixed-cut executors, 9.9% less than the faster one. All 4,944 timed outputs stay bitwise identical to independent encoding." },
+        { title: "The lead grows with the plan", fig: "clip-scaling",
+          text: "With few or short requests, the shallow fixed cut A is as fast or slightly faster; ClipStore pulls ahead as requests and clips grow. Its retained payload mostly sits between the two fixed cuts, 21.9% below cut A on the reference plan." },
+        { title: "Where the gains stop",
+          text: "End to end, encoding is a small part of 50-step text-to-video generation, so the overall speedup is only 1.006×. On the decoder side, continuation resumes bitwise and is 1.19–2.85× faster than re-decoding." }
+      ]
+    },
     figures: [
       { src: "assets/papers/figs/clip-overview.webp", w: 1800, h: 999, tab: "overview",
         alt: "Diagram of two overlapping clips, why cropping source features fails near a clip start, and ClipStore's reuse schedule across encoder cuts A, B and C.",
         caption: "Figure 1. Motivation and design. (1) Overlapping requests start independent causal states. (2) Cropping source features can fail near a request start, where dependencies reach earlier frames; reuse begins only when dependencies, initialization and sampling phase match. (3) ClipStore computes A and B, then reads A while continuing B, and finally reads B; C keeps one continuous request-local state." },
       { src: "assets/papers/figs/clip-construction.webp", w: 1800, h: 1031, tab: "results",
         alt: "Bar chart of complete construction time: independent 71.63 s, fixed A 31.64 s, fixed B 34.06 s, ClipStore 28.50 s.",
-        caption: "Figure 5. Complete construction of sixteen 129-frame latents (means of twelve runs; whiskers: observed range). ClipStore is 2.51× faster than independent encoding and takes 9.9% less time than the faster fixed cut." },
+        caption: "Figure 5. Complete construction of sixteen 129-frame latents; means of twelve runs, whiskers show the observed range." },
       { src: "assets/papers/figs/clip-scaling.webp", w: 1800, h: 1091, tab: "results",
         alt: "Four line charts of complete time and retained features against request count and clip length for fixed A, fixed B and ClipStore.",
-        caption: "Figure 4. Scaling with request count (a) and clip length (b): complete time (top) and retained payload (bottom), four-video means. Every method receives the same plan and source extent." }
+        caption: "Figure 4. Complete time (top) and retained payload (bottom) as request count (a) and clip length (b) grow; four-video means." }
     ],
     setup: "Frozen Wan2.1 video VAE encoder.",
     bibtex: null,
@@ -312,19 +360,32 @@ window.PAPERS = [
       ["Consequence", "Qwen3-4B self-consistent answers to unanswerable questions: 28% → 41–48% by round three, while benchmark accuracy plateaus; most of this rise is majority-vote sharpening itself"],
       ["Remedies", "no label-free admission rule tested stops the drift; rewarding 'unknown' backfires; test-time abstention works"]
     ],
+    story: {
+      lead: "R-Zero treats the agreement band as quality control. The results test that claim link by link: the curriculum drifts, the filter itself causes the drift, and the solver's answers change with it.",
+      steps: [
+        { title: "The admitted curriculum drifts toward ill-posed problems", fig: "selfplay-drift",
+          text: "With Qwen3 models of three sizes and Phi-4-mini, the ill-posed share of admitted problems rises in every seed, by 11.5–27 points within two rounds (Qwen3-4B: 56.7% → 79.9% by round 3), also under blind re-judging, an open-weight judge and expert human annotation. The official R-Zero code drifts too (32.5% → 55.5% and 34.0% → 61.0%), mostly through its challenger." },
+        { title: "The filter causes it", fig: "selfplay-filter",
+          text: "Scoring one fixed pool with successive solvers isolates the filter: solvable problems sharpen out through the band's upper edge, while problems whose text supports several readings stay. A class-conditional sharpening model fitted on one pool predicts the ill-posed share admitted from a held-out pool with a mean absolute error of 2.4 points; a single rate cannot." },
+        { title: "The solver's answers change with it", fig: "selfplay-answers",
+          text: "For Qwen3-4B, self-consistent answers to unanswerable questions rise from 28% to 41–48% by round three while benchmark accuracy plateaus, and stated assumptions and declines become more common. Most of this rise is majority-vote sharpening itself, which any label-free curriculum shares." },
+        { title: "What helps",
+          text: "No label-free admission rule we tested stops the drift, and rewarding 'unknown' backfires; offering abstention at test time works. All 136 pre-registered predictions are reported, and exploratory analyses are marked." }
+      ]
+    },
     figures: [
       { src: "assets/papers/figs/selfplay-overview.webp", w: 1800, h: 972, tab: "overview",
         alt: "Overview diagram: the label-free loop, the drift of the ill-posed share, why solvable problems exit the agreement band, and what the solver learns.",
         caption: "Figure 1. Overview. (a) The label-free loop. (b) The ill-posed share of admitted problems rises in every model, under every judge. (c) On one fixed pool, solvable problems sharpen out of the agreement band while ill-posed ones stay. (d) The solver answers more unanswerable questions self-consistently, declines more of them in words, and abstains when offered the option." },
       { src: "assets/papers/figs/selfplay-drift.webp", w: 1800, h: 672, tab: "results",
         alt: "Left: ill-posed share of admitted problems rising over self-play rounds for four models. Right: self-consistent answers to unanswerable questions against benchmark accuracy.",
-        caption: "Figure 2. (a) Ill-posed share of admitted problems by round (mean over seeds; shaded: range), including the official R-Zero code and blind re-judging. (b) Self-consistent answers to unanswerable questions against benchmark accuracy, from each base model to its round-3 solvers." },
+        caption: "Figure 2. (a) Ill-posed share of admitted problems by round (mean over seeds; shaded: range). (b) Self-consistent answers to unanswerable questions against benchmark accuracy, from each base model to its round-3 solvers." },
       { src: "assets/papers/figs/selfplay-filter.webp", w: 1800, h: 1604, tab: "results", narrow: true,
         alt: "Top: fraction of solvable, ambiguous and unsolvable problems inside the band across solver checkpoints. Bottom: observed and predicted ill-posed share on a held-out pool.",
-        caption: "Figure 3. The filter, isolated. (a) Fraction of each class of a fixed pool still inside the agreement band as the solver trains: solvable problems leave fastest. (b) A class-conditional sharpening model fitted on one pool predicts the ill-posed share admitted from a held-out pool (mean absolute error 2.4 points); a single rate does not." },
+        caption: "Figure 3. (a) Fraction of each class of a fixed pool inside the agreement band across solver checkpoints. (b) Ill-posed share admitted from a held-out pool: observed, predicted by the class-conditional model, and by a single rate." },
       { src: "assets/papers/figs/selfplay-answers.webp", w: 1800, h: 1486, tab: "results", narrow: true,
         alt: "Stacked bars of how Qwen3-4B answers unanswerable and hard answerable questions at base and after five rounds.",
-        caption: "Figure 4. How Qwen3-4B answers 112 unanswerable and 112 hard answerable questions at base and after five rounds (eight samples each). Sharpening turns scattered guesses into stated assumptions and declines." }
+        caption: "Figure 4. How Qwen3-4B answers 112 unanswerable and 112 hard answerable questions at base and after five rounds (eight samples each)." }
     ],
     setup: "Qwen3-4B/8B, Phi-4-mini, Qwen3-14B; 136 pre-registered predictions with exploratory analyses marked.",
     bibtex: null,
@@ -379,19 +440,32 @@ window.PAPERS = [
       ["Collusion", "verifier false-accept rate 31% → 66% under outcome rewards vs 5.6% with ProSPER; proposal Vendi diversity +50%"],
       ["Cost", "exact 4-agent Shapley credit at 1.31× rollout cost"]
     ],
+    story: {
+      lead: "Outcome rewards let a self-training team earn reward without learning. The results follow the credit from the scoreboard down to the mechanism: ProSPER improves more, keeps improving, and collusion stops paying.",
+      steps: [
+        { title: "Best on all 13 benchmarks",
+          text: "On Qwen3-8B-Base, ProSPER lifts the 13-benchmark average from 36.3 to 49.9 and is best on every benchmark: +4.6 over the strongest self-evolution baseline (INFUSER, 45.3) and +3.0 over RLVR trained on 17k labels, while using about 1.5k labeled problems." },
+        { title: "It keeps improving where baselines stall", fig: "prosper-recursion",
+          text: "Every baseline peaks by round 3–5 and then plateaus or regresses. ProSPER keeps improving through round 12, with a held-out gate guarding every promotion." },
+        { title: "Collusion stops paying", fig: "prosper-diagnostics",
+          text: "Under outcome rewards, the verifier's false-accept rate climbs from 31% to 66% and the diversity of proposed tasks falls by two thirds: easy tasks, confident wrong answers, universal approval. Under ProSPER, false acceptance falls to 5.6% even though the verifier never trains on ground-truth labels, and task diversity rises by 50%." },
+        { title: "Credit tracks who actually helps", fig: "prosper-credit",
+          text: "The verifier starts as a near-free-rider, with 9% of team credit, and becomes a principal contributor, 27% by round 12, once its critiques begin to filter harmful data. Exact four-agent Shapley credit costs 1.31× a standard team rollout." }
+      ]
+    },
     figures: [
       { src: "assets/papers/figs/prosper-overview.webp", w: 1800, h: 1196, tab: "overview",
         alt: "Overview diagram of ProSPER: outcome credit lets a team game its rewards; ProSPER credits Shapley shares of anchor progress, with gated recursion.",
         caption: "Figure 1. Overview of ProSPER. (a) Under outcome credit, a self-training team can maximize its rewards without learning. (b) ProSPER pays each agent its Shapley share of the team's learning progress, using frozen reference players from the previous round for absent agents. (c) A held-out gate promotes a team only if its paired gate accuracy does not drop. (d) The labeled anchor only scores data." },
       { src: "assets/papers/figs/prosper-recursion.webp", w: 1800, h: 909, tab: "results",
         alt: "Line chart of average accuracy over 13 benchmarks across 12 recursive rounds: ProSPER keeps rising to 49.9 while baselines peak by round 5.",
-        caption: "Figure 3. Recursive improvement: average accuracy over 13 benchmarks after each round. Every baseline peaks by round 3–5 and then plateaus or regresses, while ProSPER keeps improving through round 12." },
+        caption: "Figure 3. Average accuracy over 13 benchmarks after each recursive round." },
       { src: "assets/papers/figs/prosper-diagnostics.webp", w: 1800, h: 865, tab: "results",
         alt: "Left: verifier false-accept rate rising to 66% under outcome rewards and falling to 5.6% under ProSPER. Right: proposer task diversity.",
-        caption: "Figure 4. Collusion and collapse diagnostics. Left: the verifier's false-accept rate on held-out labeled solutions climbs from 31% to 66% under outcome rewards and falls to 5.6% with ProSPER. Right: the diversity (Vendi score) of proposed tasks." },
+        caption: "Figure 4. Left: the verifier's false-accept rate on held-out labeled solutions. Right: diversity (Vendi score) of proposed tasks." },
       { src: "assets/papers/figs/prosper-credit.webp", w: 1800, h: 838, tab: "results",
         alt: "Stacked bars of each role's share of team credit across rounds; the verifier's share grows from 9% to 27%.",
-        caption: "Figure 5. Progress-Shapley credit shares across rounds. The verifier starts as a near-free-rider (9%) and becomes a principal contributor (27% by round 12) once its critiques begin to filter harmful data." }
+        caption: "Figure 5. Normalized Progress-Shapley credit shares of the four roles across rounds." }
     ],
     setup: "Four rank-64 LoRA roles on Qwen3-8B-Base, 3 seeds; code tasks come with 5–8 proposer-written unit tests executed in a sandbox.",
     bibtex: null,

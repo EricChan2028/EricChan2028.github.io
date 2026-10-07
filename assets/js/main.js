@@ -330,13 +330,31 @@
   function figsHTML(p, tab) {
     return (p.figures || []).filter(function (f) { return f.tab === tab; }).map(figHTML).join("");
   }
+  var figId = function (f) { return f.id || f.src.split("/").pop().replace(/\.\w+$/, ""); };
+
+  /* Results tab: one storyline, each step a claim + its numbers + the figure that shows it. */
+  function storyHTML(p) {
+    var story = p.story || {}, steps = story.steps || [], byId = {}, used = {};
+    (p.figures || []).forEach(function (f) { byId[figId(f)] = f; });
+    var items = steps.map(function (st, i) {
+      var f = st.fig && byId[st.fig];
+      if (f) used[st.fig] = true;
+      return '<li class="story__step"><span class="story__num" aria-hidden="true">' + (i < 9 ? "0" : "") + (i + 1) + "</span>" +
+        '<h3 class="story__title">' + esc(st.title) + "</h3>" +
+        '<p class="story__text">' + esc(st.text) + "</p>" + (f ? figHTML(f) : "") + "</li>";
+    }).join("");
+    var rest = (p.figures || []).filter(function (f) { return f.tab === "results" && !used[figId(f)]; }).map(figHTML).join("");
+    return (steps.length ? '<p class="story__eyebrow">The story in ' + steps.length + " steps</p>" : "") +
+      (story.lead ? '<p class="story__lead">' + esc(story.lead) + "</p>" : "") +
+      (items ? '<ol class="story">' + items + "</ol>" : "") + rest +
+      (p.figureNote ? '<p class="setup">' + esc(p.figureNote) + "</p>" : "");
+  }
 
   function sheetHTML(p) {
     var acc = p.status === "accepted";
-    var resultFigs = figsHTML(p, "results");
-    var tabs = [["overview", "Overview"], ["results", "Key results"]];
+    var tabs = [["overview", "Overview"], ["results", "Results"]];
     if (p.bibtex) tabs.push(["cite", "Cite"]);
-    tabs.push(["pdf", p.pdf ? "PDF" : p.poster ? "Poster & PDF" : "PDF"]);
+    tabs.push(["pdf", p.pdf ? "PDF" : p.poster ? 'Poster<span class="tab__more"> &amp; PDF</span>' : "PDF"]);
     var actions = [];
     if (p.pdf) actions.push('<a class="plink plink--main" href="' + esc(p.pdf) + '" target="_blank" rel="noopener">' + ico.pdf + " Open PDF</a>");
     else actions.push('<button class="plink plink--main" type="button" data-go="pdf">' + (p.poster ? ico.poster + " Poster &amp; PDF" : ico.lock + " PDF status") + "</button>");
@@ -367,9 +385,10 @@
       "</section>" +
       '<section class="tabpanel" role="tabpanel" id="p-results" aria-labelledby="t-results" hidden>' +
         '<div class="kpis">' + p.highlights.map(function (h) { return '<div class="kpi"><strong>' + esc(h[0]) + "</strong><span>" + esc(h[1]) + "</span></div>"; }).join("") + "</div>" +
-        (resultFigs ? "<h3>Figures</h3>" + resultFigs : p.figureNote ? '<p class="setup">' + esc(p.figureNote) + "</p>" : "") +
-        "<h3>All results</h3>" +
+        storyHTML(p) +
+        '<details class="numbers"><summary>All numbers in one table</summary>' +
         '<table class="rtable"><tbody>' + p.results.map(function (r) { return '<tr><th scope="row">' + esc(r[0]) + "</th><td>" + esc(r[1]) + "</td></tr>"; }).join("") + "</tbody></table>" +
+        "</details>" +
       "</section>";
     if (p.bibtex) {
       html += '<section class="tabpanel" role="tabpanel" id="p-cite" aria-labelledby="t-cite" hidden>' +
