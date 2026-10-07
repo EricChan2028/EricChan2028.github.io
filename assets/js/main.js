@@ -99,9 +99,9 @@
   }
   function defs(u) {
     return '<defs>' +
-      '<linearGradient id="' + u + '-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5D35A3"/><stop offset="1" stop-color="#2C1854"/></linearGradient>' +
+      '<linearGradient id="' + u + '-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34185A"/><stop offset="1" stop-color="#12081F"/></linearGradient>' +
       '<linearGradient id="' + u + '-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3E2A6"/><stop offset=".55" stop-color="#C9A227"/><stop offset="1" stop-color="#9C7714"/></linearGradient>' +
-      '<radialGradient id="' + u + '-glow" cx=".85" cy=".05" r=".95"><stop offset="0" stop-color="#9E78DD" stop-opacity=".6"/><stop offset="1" stop-color="#9E78DD" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="' + u + '-glow" cx=".85" cy=".05" r=".95"><stop offset="0" stop-color="#7444B5" stop-opacity=".6"/><stop offset="1" stop-color="#7444B5" stop-opacity="0"/></radialGradient>' +
       '</defs><rect width="320" height="200" fill="url(#' + u + '-bg)"/><rect width="320" height="200" fill="url(#' + u + '-glow)"/>';
   }
   function lbl(x, y, t, op, anchor) {
@@ -115,7 +115,7 @@
       var flag = { "0-5": 1, "1-3": 1, "2-6": 1 };
       for (var r = 0; r < 3; r++) for (var c = 0; c < 12; c++) {
         var x = 24 + c * 22, y = 42 + r * 22, k = r + "-" + c, isNew = c >= 8;
-        s += '<rect x="' + x + '" y="' + y + '" width="17" height="17" rx="4" fill="' + (isNew ? "url(#" + u + "-gold)" : "#9E78DD") +
+        s += '<rect x="' + x + '" y="' + y + '" width="17" height="17" rx="4" fill="' + (isNew ? "url(#" + u + "-gold)" : "#7444B5") +
           '" fill-opacity="' + (isNew ? 1 : Math.min(1, 0.32 + 0.08 * c).toFixed(2)) + '"' + (flag[k] ? ' stroke="#F3E2A6" stroke-width="1.6"' : "") + "/>";
         if (flag[k]) s += '<circle cx="' + (x + 17) + '" cy="' + y + '" r="3.2" fill="#F3E2A6"/>';
       }
@@ -132,11 +132,11 @@
         s += '<line x1="' + N[i][1] + '" y1="' + N[i][2] + '" x2="' + N[j][1] + '" y2="' + N[j][2] + '" stroke="#C9A227" stroke-opacity="' +
           (0.16 + 0.07 * (i + j)).toFixed(2) + '" stroke-width="' + (0.8 + 0.45 * (i + j)).toFixed(1) + '"/>';
       }
-      s += '<circle cx="160" cy="106" r="22" fill="#2C1854" stroke="#E9D18A" stroke-opacity=".45" stroke-dasharray="3 4"/>';
+      s += '<circle cx="160" cy="106" r="22" fill="#12081F" stroke="#E9D18A" stroke-opacity=".45" stroke-dasharray="3 4"/>';
       s += '<text x="160" y="113" ' + SERIF + ' font-style="italic" font-size="20" fill="#E9D18A" text-anchor="middle">φ</text>';
       N.forEach(function (n) {
-        s += '<circle cx="' + n[1] + '" cy="' + n[2] + '" r="' + (n[3] + 7) + '" fill="#9E78DD" fill-opacity=".2"/>';
-        s += '<circle cx="' + n[1] + '" cy="' + n[2] + '" r="' + n[3] + '" fill="#5A34A0" stroke="url(#' + u + '-gold)" stroke-width="2"/>';
+        s += '<circle cx="' + n[1] + '" cy="' + n[2] + '" r="' + (n[3] + 7) + '" fill="#7444B5" fill-opacity=".2"/>';
+        s += '<circle cx="' + n[1] + '" cy="' + n[2] + '" r="' + n[3] + '" fill="#43206F" stroke="url(#' + u + '-gold)" stroke-width="2"/>';
         s += '<text x="' + n[1] + '" y="' + (n[2] + 5) + '" ' + SERIF + ' font-size="' + (11 + n[3] * 0.38).toFixed(1) + '" fill="#fff" text-anchor="middle">' + n[0] + "</text>";
       });
       s += lbl(296, 188, "Σ φᵢ = v(N)", 0.7, "end") + lbl(24, 188, "SIZE = SHAPLEY SHARE", 0.5);
@@ -144,7 +144,7 @@
     },
     selfplay: function (u) {
       var s = defs(u) + lbl(24, 28, "ILL-POSED SHARE OF ADMITTED PROBLEMS");
-      s += '<rect x="40" y="70" width="256" height="64" fill="#9E78DD" fill-opacity=".16"/>' + lbl(44, 64, "AGREEMENT BAND", 0.45);
+      s += '<rect x="40" y="70" width="256" height="64" fill="#7444B5" fill-opacity=".16"/>' + lbl(44, 64, "AGREEMENT BAND", 0.45);
       var rnd = rng(7);
       for (var i = 0; i < 4; i++) for (var k = 0; k < 14; k++) {
         var x = 46 + i * 76 + rnd() * 40, y = 74 + rnd() * 56, ill = rnd() < 0.28 + i * 0.13;
@@ -154,7 +154,7 @@
       s += '<line x1="40" y1="160" x2="296" y2="160" stroke="#B9A0E0" stroke-opacity=".35"/>';
       ["ROUND 0", "1", "2", "3"].forEach(function (t, i) { s += lbl(60 + i * 76, 178, t, 0.55, "middle"); });
       s += '<polyline points="' + pts.map(function (p) { return p.join(","); }).join(" ") + '" fill="none" stroke="url(#' + u + '-gold)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
-      pts.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3.6" fill="#2C1854" stroke="#F3E2A6" stroke-width="2"/>'; });
+      pts.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3.6" fill="#12081F" stroke="#F3E2A6" stroke-width="2"/>'; });
       s += '<text x="296" y="54" ' + SERIF + ' font-size="17" fill="#fff" text-anchor="end" font-style="italic">drift ↑</text>';
       return wrapSvg(s);
     },
@@ -165,7 +165,7 @@
         var x = x0 + k * (c + g), y = y0 + r * (c + g), q = rnd();
         if (q < 0.14) { s += '<rect x="' + x + '" y="' + y + '" width="' + c + '" height="' + c + '" rx="5" fill="none" stroke="#B9A0E0" stroke-opacity=".3" stroke-dasharray="3 3"/>'; continue; }
         var gold = q > 0.74;
-        s += '<rect x="' + x + '" y="' + y + '" width="' + c + '" height="' + c + '" rx="5" fill="' + (gold ? "url(#" + u + "-gold)" : "#9E78DD") + '" fill-opacity="' + (gold ? 1 : (0.3 + q * 0.6).toFixed(2)) + '"/>';
+        s += '<rect x="' + x + '" y="' + y + '" width="' + c + '" height="' + c + '" rx="5" fill="' + (gold ? "url(#" + u + "-gold)" : "#7444B5") + '" fill-opacity="' + (gold ? 1 : (0.3 + q * 0.6).toFixed(2)) + '"/>';
       }
       [[52, 150], [60, 162], [44, 166]].forEach(function (d) {
         s += '<path d="M' + d[0] + " " + (d[1] - 5) + " l5 5 -5 5 -5 -5z\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".7\" stroke-width=\"1.3\"/>";
@@ -183,7 +183,7 @@
       [[0, 24], [2, 22], [4, 24]].forEach(function (t) {
         var p = hex[t[0]], a2 = Math.PI / 3 * t[0] - Math.PI / 2, x2 = p[0] + t[1] * Math.cos(a2), y2 = p[1] + t[1] * Math.sin(a2);
         s += '<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="#B9A0E0" stroke-width="2"/>' +
-          '<circle cx="' + x2.toFixed(1) + '" cy="' + y2.toFixed(1) + '" r="5" fill="#9E78DD" stroke="#E9D18A" stroke-width="1.4"/>';
+          '<circle cx="' + x2.toFixed(1) + '" cy="' + y2.toFixed(1) + '" r="5" fill="#7444B5" stroke="#E9D18A" stroke-width="1.4"/>';
       });
       var bx = 178, base = 132, vals = [26, 15, 34, 7, 21, 2];
       s += '<line x1="' + (bx - 6) + '" y1="' + base + '" x2="' + (bx + 124) + '" y2="' + base + '" stroke="#F3E2A6" stroke-opacity=".85" stroke-width="1.2"/>';
@@ -203,7 +203,7 @@
       }
       [[24, 150], [56, 150], [92, 150], [124, 150], [160, 136]].forEach(function (cl, k) {
         var y = 62 + k * 22, sx = cl[0] + 24, sw = Math.max(0, Math.min(cl[0] + cl[1], 290) - sx - 6);
-        s += '<rect x="' + cl[0] + '" y="' + y + '" width="' + cl[1] + '" height="14" rx="7" fill="#9E78DD" fill-opacity=".55"/>';
+        s += '<rect x="' + cl[0] + '" y="' + y + '" width="' + cl[1] + '" height="14" rx="7" fill="#7444B5" fill-opacity=".55"/>';
         s += '<rect x="' + sx + '" y="' + (y + 3) + '" width="' + sw + '" height="8" rx="4" fill="url(#' + u + '-gold)" fill-opacity=".92"/>';
       });
       s += lbl(24, 188, "REPAIR PREFIX → REUSE", 0.5) + '<text x="296" y="190" ' + SERIF + ' font-style="italic" font-size="15" fill="#fff" text-anchor="end">bitwise-identical</text>';
@@ -545,7 +545,7 @@
           var rec = Math.max(0, Math.min(1, (t.x + t.w) / W));
           var keep = Math.pow(rec, 2.4 - 2.1 * t.imp);           // geometric retention: filler fades, key tokens persist
           var a = (0.025 + 0.42 * keep * (0.28 + 0.72 * t.imp)) * vfade + t.glow * 0.6;
-          ctx.fillStyle = t.imp === 1 ? "rgba(245,214,120," + a.toFixed(3) + ")" : "rgba(222,206,252," + (a * 0.62).toFixed(3) + ")";   // filler tokens stay quiet on the lighter hero
+          ctx.fillStyle = t.imp === 1 ? "rgba(219,185,79," + a.toFixed(3) + ")" : "rgba(150,110,215," + a.toFixed(3) + ")";
           rr(t.x, row.y, t.w, TH, 4);
           ctx.fill();
           if (t.glow > 0.03) {
@@ -607,7 +607,7 @@
         var mx = (cx + q.x) / 2, my = Math.min(cy, q.y) - 46 - Math.abs(cx - q.x) * 0.2;
         var g = ctx.createLinearGradient(q.x, q.y, cx, cy);
         g.addColorStop(0, "rgba(255,241,200," + Math.min(1, 0.95 * a.w + 0.18).toFixed(3) + ")");
-        g.addColorStop(1, "rgba(245,214,120," + Math.min(1, 0.7 * a.w + 0.08).toFixed(3) + ")");
+        g.addColorStop(1, "rgba(219,185,79," + Math.min(1, 0.7 * a.w + 0.08).toFixed(3) + ")");
         ctx.strokeStyle = g;
         ctx.lineWidth = 0.9 + 3.6 * a.w;
         ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.quadraticCurveTo(mx, my, cx, cy); ctx.stroke();
