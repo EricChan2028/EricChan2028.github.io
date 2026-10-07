@@ -386,7 +386,7 @@
       '<section class="tabpanel" role="tabpanel" id="p-results" aria-labelledby="t-results" hidden>' +
         '<div class="kpis">' + p.highlights.map(function (h) { return '<div class="kpi"><strong>' + esc(h[0]) + "</strong><span>" + esc(h[1]) + "</span></div>"; }).join("") + "</div>" +
         storyHTML(p) +
-        '<details class="numbers"><summary>All numbers in one table</summary>' +
+        '<details class="numbers" open><summary>All numbers in one table</summary>' +
         '<table class="rtable"><tbody>' + p.results.map(function (r) { return '<tr><th scope="row">' + esc(r[0]) + "</th><td>" + esc(r[1]) + "</td></tr>"; }).join("") + "</tbody></table>" +
         "</details>" +
       "</section>";
